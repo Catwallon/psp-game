@@ -1,7 +1,7 @@
 CC = psp-gcc
 CFLAGS = 
 LDFLAGS = -L$(PSPDEV)/psp/sdk/lib
-LDLIBS = -lpspkernel -lpspdebug -lpspdisplay -lpspge -lpspuser -lpspgu -lpspgum
+LDLIBS = -lpspkernel -lpspdebug -lpspdisplay -lpspge -lpspuser -lpspgu -lpspgum -lpspctrl
 CPPFLAGS = -I$(PSPDEV)/psp/sdk/include -Iinclude
 
 TARGET = psp-game.elf

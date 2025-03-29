@@ -32,7 +32,7 @@ void initGu() {
   sceGuDisplay(GU_TRUE);
 }
 
-void renderGame() {
+void renderGame(GameState *gs) {
   sceGuStart(GU_DIRECT, list);
 
   sceGuClearColor(0xffffffff);
@@ -46,10 +46,15 @@ void renderGame() {
   sceGumMatrixMode(GU_VIEW);
   sceGumLoadIdentity();
 
+  ScePspFVector3 position = {gs->playerX, 0.0f, gs->playerZ};
+  ScePspFVector3 target = {gs->playerX, 0.0f, gs->playerZ - 1.0f};
+  ScePspFVector3 up = {0.0f, 1.0f, 0.0f};
+  sceGumLookAt(&position, &target, &up);
+
   sceGumMatrixMode(GU_MODEL);
   sceGumLoadIdentity();
   {
-    ScePspFVector3 pos = {0, 0, -2.5f};
+    ScePspFVector3 pos = {0.0f, 0.0f, -2.5f};
     sceGumTranslate(&pos);
   }
 

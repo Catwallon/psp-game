@@ -1,6 +1,7 @@
 #pragma once
 
 #include "config.h"
+#include "gamestate.h"
 #include <pspdisplay.h>
 #include <pspgu.h>
 #include <pspgum.h>
@@ -10,5 +11,5 @@ typedef struct {
 } Vertex;
 
 void initGu();
-void renderGame();
+void renderGame(GameState *gs);
 void cleanupGu();
