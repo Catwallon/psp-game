@@ -7,4 +7,6 @@ typedef struct {
   ScePspFVector3 playerPos;
   ScePspFVector3 playerRot;
   SceCtrlData pad;
+  SceCtrlData previousPad;
+  int debug;
 } GameState;

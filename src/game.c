@@ -7,8 +7,10 @@ GameState initGame() {
 
   gs.playerPos = playerPos;
   gs.playerRot = playerRot;
+  gs.debug = 0;
   initGu();
   initInput();
+  initDebug();
   return gs;
 }
 
@@ -46,6 +48,8 @@ void updateGame(GameState *gs) {
     else
       gs->playerRot.x = -degToRad(MAX_X_ANGLE);
   }
+  if (isJustPressed(gs, PSP_CTRL_SELECT))
+    gs->debug = !gs->debug;
 }
 
 void gameLoop(GameState *gs) {
@@ -53,6 +57,9 @@ void gameLoop(GameState *gs) {
     handleInput(gs);
     updateGame(gs);
     renderGame(gs);
+    if (gs->debug)
+      displayDebug(gs);
+    printDebug(gs);
   }
 }
 
