@@ -1,6 +1,6 @@
 #include "renderer.h"
 
-static unsigned int __attribute__((aligned(16))) list[262144];
+static int __attribute__((aligned(16))) list[262144];
 
 void initGu() {
 

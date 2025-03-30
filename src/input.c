@@ -10,11 +10,13 @@ void handleInput(GameState *gs) {
   sceCtrlReadBufferPositive(&gs->pad, 1);
 }
 
-int isPressed(GameState *gs, enum PspCtrlButtons button) {
-  return gs->pad.Buttons & button;
+char isPressed(GameState *gs, enum PspCtrlButtons button) {
+  if (gs->pad.Buttons & button)
+    return 1;
+  return 0;
 }
 
-int isJustPressed(GameState *gs, enum PspCtrlButtons button) {
+char isJustPressed(GameState *gs, enum PspCtrlButtons button) {
   if (!(gs->previousPad.Buttons & button) && isPressed(gs, button))
     return 1;
   return 0;

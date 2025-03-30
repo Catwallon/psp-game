@@ -8,5 +8,7 @@ typedef struct {
   ScePspFVector3 playerRot;
   SceCtrlData pad;
   SceCtrlData previousPad;
-  int debug;
+  unsigned long long tick;
+  unsigned long long previousTick;
+  char debug;
 } GameState;

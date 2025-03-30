@@ -5,6 +5,6 @@
 #define SCR_HEIGHT 272
 
 // Game settings
-#define PLAYER_SPEED 0.001
-#define SENSIVITY 0.05
+#define PLAYER_SPEED 0.05
+#define SENSIVITY 3
 #define MAX_X_ANGLE 80
