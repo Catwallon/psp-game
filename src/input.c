@@ -10,3 +10,7 @@ void handleInput(GameState *gs) { sceCtrlReadBufferPositive(&gs->pad, 1); }
 int isPressed(GameState *gs, enum PspCtrlButtons button) {
   return gs->pad.Buttons & button;
 }
+
+unsigned char getAnalogX(GameState *gs) { return gs->pad.Lx; }
+
+unsigned char getAnalogY(GameState *gs) { return gs->pad.Ly; }

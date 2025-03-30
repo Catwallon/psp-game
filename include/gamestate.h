@@ -1,9 +1,10 @@
 #pragma once
 
 #include <pspctrl.h>
+#include <pspkernel.h>
 
 typedef struct {
-  float playerX;
-  float playerZ;
+  ScePspFVector3 playerPos;
+  ScePspFVector3 playerRot;
   SceCtrlData pad;
 } GameState;
