@@ -2,7 +2,7 @@
 
 GameState initGame() {
   GameState gs;
-  ScePspFVector3 playerPos = {0.0f, 0.0f, 0.0f};
+  ScePspFVector3 playerPos = {0.0f, 1.8f, 0.0f};
   ScePspFVector3 playerRot = {0.0f, 0.0f, 0.0f};
 
   gs.playerPos = playerPos;
@@ -36,12 +36,23 @@ void updateGame(GameState *gs) {
   gs->playerPos.x += (getAnalogX(gs) - 128) * rightX * PLAYER_SPEED * deltaTime;
   gs->playerPos.z += (getAnalogX(gs) - 128) * rightZ * PLAYER_SPEED * deltaTime;
 
-  if (isPressed(gs, PSP_CTRL_SQUARE)) {
+  // Move up
+  if (isPressed(gs, PSP_CTRL_UP))
+    gs->playerPos.y += PLAYER_SPEED * deltaTime * 128;
+
+  // Move down
+  if (isPressed(gs, PSP_CTRL_DOWN))
+    gs->playerPos.y -= PLAYER_SPEED * deltaTime * 128;
+
+  // Rotate left
+  if (isPressed(gs, PSP_CTRL_SQUARE))
     gs->playerRot.y += SENSIVITY * deltaTime;
-  }
-  if (isPressed(gs, PSP_CTRL_CIRCLE)) {
+
+  // Rotate right
+  if (isPressed(gs, PSP_CTRL_CIRCLE))
     gs->playerRot.y -= SENSIVITY * deltaTime;
-  }
+
+  // Rotate up
   if (isPressed(gs, PSP_CTRL_TRIANGLE)) {
     float newPlayerRotX = gs->playerRot.x + SENSIVITY * deltaTime;
     if (radToDeg(newPlayerRotX) <= MAX_X_ANGLE)
@@ -49,6 +60,8 @@ void updateGame(GameState *gs) {
     else
       gs->playerRot.x = degToRad(MAX_X_ANGLE);
   }
+
+  // Rotate down
   if (isPressed(gs, PSP_CTRL_CROSS)) {
     float newPlayerRotX = gs->playerRot.x - SENSIVITY * deltaTime;
     if (radToDeg(newPlayerRotX) >= -MAX_X_ANGLE)
@@ -56,6 +69,8 @@ void updateGame(GameState *gs) {
     else
       gs->playerRot.x = -degToRad(MAX_X_ANGLE);
   }
+
+  // Enable / Disable debug
   if (isJustPressed(gs, PSP_CTRL_SELECT))
     gs->debug = !gs->debug;
 }

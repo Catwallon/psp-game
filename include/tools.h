@@ -6,6 +6,11 @@
 
 #define M_PI 3.14159265358979323846
 
+typedef struct {
+  float x, y, z;
+} Vertex;
+
+Vertex createVertex(float x, float y, float z);
 float degToRad(float deg);
 float radToDeg(float rad);
 float getDeltaTime(GameState *gs);

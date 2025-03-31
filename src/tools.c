@@ -1,5 +1,10 @@
 #include "tools.h"
 
+Vertex createVertex(float x, float y, float z) {
+  Vertex vertex = {x, y, z};
+  return vertex;
+}
+
 float degToRad(float deg) { return deg * (M_PI / 180.0f); }
 
 float radToDeg(float rad) { return rad * (180.0f / M_PI); }

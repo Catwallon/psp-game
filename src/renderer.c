@@ -61,71 +61,15 @@ void renderGame(GameState *gs) {
   updateCamera(gs);
 
   sceGumMatrixMode(GU_MODEL);
-  sceGumLoadIdentity();
-  {
-    ScePspFVector3 pos = {0.0f, 0.0f, -10.5f};
-    sceGumTranslate(&pos);
-    Vertex *vertices = (Vertex *)sceGuGetMemory(3 * sizeof(Vertex));
-
-    vertices[0].x = -1;
-    vertices[0].y = -1;
-    vertices[0].z = 0;
-
-    vertices[1].x = 0;
-    vertices[1].y = 1;
-    vertices[1].z = 0;
-
-    vertices[2].x = 1;
-    vertices[2].y = -1;
-    vertices[2].z = 0;
-
-    sceGumDrawArray(GU_TRIANGLES, GU_VERTEX_32BITF | GU_TRANSFORM_3D, 3, 0,
-                    vertices);
-  }
-
-  sceGumLoadIdentity();
-  {
-    ScePspFVector3 pos = {2.0f, 0.0f, -2.5f};
-    sceGumTranslate(&pos);
-    Vertex *vertices = (Vertex *)sceGuGetMemory(3 * sizeof(Vertex));
-
-    vertices[0].x = -1;
-    vertices[0].y = -1;
-    vertices[0].z = 0;
-
-    vertices[1].x = 0;
-    vertices[1].y = 1;
-    vertices[1].z = 0;
-
-    vertices[2].x = 1;
-    vertices[2].y = -1;
-    vertices[2].z = 0;
-
-    sceGumDrawArray(GU_TRIANGLES, GU_VERTEX_32BITF | GU_TRANSFORM_3D, 3, 0,
-                    vertices);
-  }
-
-  sceGumLoadIdentity();
-  {
-    ScePspFVector3 pos = {-2.0f, 0.0f, -2.5f};
-    sceGumTranslate(&pos);
-    Vertex *vertices = (Vertex *)sceGuGetMemory(3 * sizeof(Vertex));
-
-    vertices[0].x = -1;
-    vertices[0].y = -1;
-    vertices[0].z = 0;
-
-    vertices[1].x = 0;
-    vertices[1].y = 1;
-    vertices[1].z = 0;
-
-    vertices[2].x = 1;
-    vertices[2].y = -1;
-    vertices[2].z = 0;
-
-    sceGumDrawArray(GU_TRIANGLES, GU_VERTEX_32BITF | GU_TRANSFORM_3D, 3, 0,
-                    vertices);
-  }
+  drawChunk((ScePspFVector3){-CHUNK_SIZE, 0.0f, -CHUNK_SIZE});
+  drawChunk((ScePspFVector3){0.0f, 0.0f, -CHUNK_SIZE});
+  drawChunk((ScePspFVector3){CHUNK_SIZE, 0.0f, -CHUNK_SIZE});
+  drawChunk((ScePspFVector3){-CHUNK_SIZE, 0.0f, 0.0f});
+  drawChunk((ScePspFVector3){0.0f, 0.0f, 0.0f});
+  drawChunk((ScePspFVector3){CHUNK_SIZE, 0.0f, 0.0f});
+  drawChunk((ScePspFVector3){-CHUNK_SIZE, 0.0f, CHUNK_SIZE});
+  drawChunk((ScePspFVector3){0.0f, 0.0f, CHUNK_SIZE});
+  drawChunk((ScePspFVector3){CHUNK_SIZE, 0.0f, CHUNK_SIZE});
 
   sceGuFinish();
   sceGuSync(0, 0);
