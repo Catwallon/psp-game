@@ -1,7 +1,7 @@
 #include "tools.h"
 
-Vertex createVertex(float x, float y, float z) {
-  Vertex vertex = {x, y, z};
+Vertex createVertex(float u, float v, float x, float y, float z) {
+  Vertex vertex = {u, v, x, y, z};
   return vertex;
 }
 

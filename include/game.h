@@ -5,6 +5,7 @@
 #include "gamestate.h"
 #include "input.h"
 #include "renderer.h"
+#include "texture.h"
 #include "tools.h"
 #include <math.h>
 #include <pspctrl.h>

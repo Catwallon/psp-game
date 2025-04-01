@@ -10,6 +10,7 @@ GameState initGame() {
   gs.debug = 0;
   gs.tick = 0;
   gs.previousTick = 0;
+  gs.textureCache = initTextureCache();
   initGu();
   initInput();
   initDebug();

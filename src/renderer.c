@@ -61,15 +61,15 @@ void renderGame(GameState *gs) {
   updateCamera(gs);
 
   sceGumMatrixMode(GU_MODEL);
-  drawChunk((ScePspFVector3){-CHUNK_SIZE, 0.0f, -CHUNK_SIZE});
-  drawChunk((ScePspFVector3){0.0f, 0.0f, -CHUNK_SIZE});
-  drawChunk((ScePspFVector3){CHUNK_SIZE, 0.0f, -CHUNK_SIZE});
-  drawChunk((ScePspFVector3){-CHUNK_SIZE, 0.0f, 0.0f});
-  drawChunk((ScePspFVector3){0.0f, 0.0f, 0.0f});
-  drawChunk((ScePspFVector3){CHUNK_SIZE, 0.0f, 0.0f});
-  drawChunk((ScePspFVector3){-CHUNK_SIZE, 0.0f, CHUNK_SIZE});
-  drawChunk((ScePspFVector3){0.0f, 0.0f, CHUNK_SIZE});
-  drawChunk((ScePspFVector3){CHUNK_SIZE, 0.0f, CHUNK_SIZE});
+  drawChunk(gs, (ScePspFVector3){-CHUNK_SIZE, 0.0f, -CHUNK_SIZE});
+  drawChunk(gs, (ScePspFVector3){0.0f, 0.0f, -CHUNK_SIZE});
+  drawChunk(gs, (ScePspFVector3){CHUNK_SIZE, 0.0f, -CHUNK_SIZE});
+  drawChunk(gs, (ScePspFVector3){-CHUNK_SIZE, 0.0f, 0.0f});
+  drawChunk(gs, (ScePspFVector3){0.0f, 0.0f, 0.0f});
+  drawChunk(gs, (ScePspFVector3){CHUNK_SIZE, 0.0f, 0.0f});
+  drawChunk(gs, (ScePspFVector3){-CHUNK_SIZE, 0.0f, CHUNK_SIZE});
+  drawChunk(gs, (ScePspFVector3){0.0f, 0.0f, CHUNK_SIZE});
+  drawChunk(gs, (ScePspFVector3){CHUNK_SIZE, 0.0f, CHUNK_SIZE});
 
   sceGuFinish();
   sceGuSync(0, 0);

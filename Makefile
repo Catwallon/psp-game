@@ -1,17 +1,23 @@
 CC = psp-gcc
-CFLAGS = 
+CFLAGS =
 LDFLAGS = -L$(PSPDEV)/psp/sdk/lib
 LDLIBS = -lm -lpspkernel -lpspdebug -lpspdisplay -lpspge -lpspuser -lpspgu -lpspgum -lpspctrl
-CPPFLAGS =-I$(PSPDEV)/psp/sdk/include -Iinclude
+CPPFLAGS = -I$(PSPDEV)/psp/sdk/include -Iinclude
 
 TARGET = psp-game.elf
 
 SRCDIR = src
+ASSETDIR = asset
 OBJDIR = obj
 BINDIR = bin
 
 SRC = $(shell find $(SRCDIR) -name '*.c')
-OBJ = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRC))
+ASSET = $(shell find $(ASSETDIR) -name '*.raw')
+
+OBJ_SRC = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRC))
+OBJ_ASSET = $(patsubst $(ASSETDIR)/%.raw, $(OBJDIR)/%.o, $(ASSET))
+OBJ = $(OBJ_SRC) $(OBJ_ASSET)
+
 BIN = $(addprefix $(BINDIR)/, $(TARGET))
 
 TITLE = "PSP game"
@@ -34,6 +40,10 @@ $(BIN): $(OBJ)
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+
+$(OBJDIR)/%.o: $(ASSETDIR)/%.raw
+	@mkdir -p $(dir $@)
+	bin2o -i $< $@ $(basename $(notdir $<))
 
 clean:
 	rm -rf $(OBJDIR)

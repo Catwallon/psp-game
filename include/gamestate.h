@@ -1,5 +1,6 @@
 #pragma once
 
+#include "texture.h"
 #include <pspctrl.h>
 #include <pspkernel.h>
 
@@ -11,4 +12,5 @@ typedef struct {
   unsigned long long tick;
   unsigned long long previousTick;
   char debug;
+  TextureCache textureCache;
 } GameState;
