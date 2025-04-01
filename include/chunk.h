@@ -7,4 +7,4 @@
 #include <pspgu.h>
 #include <pspgum.h>
 
-void drawChunk(GameState *gs, ScePspFVector3 pos);
+void drawChunk(GameState *gs, ScePspFVector3 pos, int chunkRes);

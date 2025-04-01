@@ -1,8 +1,16 @@
 #include "chunk.h"
+#include <stdio.h>
 
-float getHeight(float x, float z) { return sinf(x * 0.1f) * cosf(z * 0.1f); }
+// TODO: Simplex noise
+static float simplex2D(float x, float z) {
+  return sinf(x * 0.1f) * cosf(z * 0.1f);
+}
 
-void drawChunk(GameState *gs, ScePspFVector3 pos) {
+static Vertex createChunkVertice(ScePspFVector3 chunkPos, int x, int z) {
+  return createVertex(x, z, x, simplex2D(chunkPos.x + x, chunkPos.z + z), z);
+}
+
+void drawChunk(GameState *gs, ScePspFVector3 pos, int chunkRes) {
   sceGumLoadIdentity();
   sceGumTranslate(&pos);
   sceGuFrontFace(GU_CCW);
@@ -15,27 +23,23 @@ void drawChunk(GameState *gs, ScePspFVector3 pos) {
   sceGuTexWrap(GU_REPEAT, GU_REPEAT);
 
   int index = 0;
-  int nbVerts = CHUNK_SIZE * (CHUNK_SIZE + 1) * 2 + (CHUNK_SIZE - 1) * 2;
-  Vertex *verts = sceGuGetMemory(sizeof(Vertex) * nbVerts);
+  int nbVertices = chunkRes * ((chunkRes + 1) * 2) + (chunkRes * 2) - 2;
+  Vertex *vertices = sceGuGetMemory(sizeof(Vertex) * nbVertices);
+  float stepLen = CHUNK_SIZE / chunkRes;
 
-  for (int i = 0; i < CHUNK_SIZE; i++) {
-    for (int j = 0; j < (CHUNK_SIZE + 1) * 2; j++) {
-      char odd = j % 2;
-      int x = j / 2;
-      int z = i + odd;
-      verts[index++] =
-          createVertex(x, z, x, getHeight(pos.x + x, pos.z + z), z);
+  for (int i = 0; i < chunkRes; i++) {
+    float z = i * stepLen;
+    for (int j = 0; j <= chunkRes; j++) {
+      float x = j * stepLen;
+      vertices[index++] = createChunkVertice(pos, x, z);
+      vertices[index++] = createChunkVertice(pos, x, z + stepLen);
     }
     if (i < CHUNK_SIZE - 1) {
-      verts[index++] = verts[index - 1];
-      int x = 0;
-      int z = i + 1;
-      verts[index++] =
-          createVertex(x, z, x, getHeight(pos.x + x, pos.z + z), z);
+      vertices[index++] = vertices[index - 1];
+      vertices[index++] = createChunkVertice(pos, 0, vertices[index - 1].z);
     }
   }
-
   sceGumDrawArray(GU_TRIANGLE_STRIP,
                   GU_TEXTURE_32BITF | GU_VERTEX_32BITF | GU_TRANSFORM_3D,
-                  nbVerts, 0, verts);
+                  nbVertices, 0, vertices);
 }
