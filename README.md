@@ -1,6 +1,7 @@
 # PSP Game
 
 An experimental PSP game project with no specific goal for now. The main objective is to explore the limits of procedural generation on such a constrained system.
+![screenshot](https://raw.github.com/Catwallon/psp-game/master/screenshots/1.png)
 
 ## Dependencies
 
