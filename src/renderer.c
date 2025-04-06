@@ -35,12 +35,11 @@ void initGu() {
 void updateCamera(GameState *gs) {
   sceGumMatrixMode(GU_PROJECTION);
   sceGumLoadIdentity();
-  sceGumPerspective(75.0f, 16.0f / 9.0f, 0.5f, 1000.0f);
+  sceGumPerspective(70, 16.0f / 9.0f, 1.0f, 1000.0f);
 
   sceGumMatrixMode(GU_VIEW);
   sceGumLoadIdentity();
   {
-
     ScePspFVector3 invRot = {-gs->playerRot.x, -gs->playerRot.y,
                              -gs->playerRot.z};
     sceGumRotateXYZ(&invRot);
@@ -54,18 +53,14 @@ void updateCamera(GameState *gs) {
 void renderGame(GameState *gs) {
   sceGuStart(GU_DIRECT, list);
 
-  sceGuClearColor(0xffffffff);
+  sceGuClearColor(0xfffce3a7);
   sceGuClearDepth(0);
   sceGuClear(GU_COLOR_BUFFER_BIT | GU_DEPTH_BUFFER_BIT);
 
   updateCamera(gs);
 
   sceGumMatrixMode(GU_MODEL);
-  drawChunk(gs, (ScePspFVector3){0.0f, 0.0f, 0.0f}, 16);
-  drawChunk(gs, (ScePspFVector3){0.0f, 0.0f, -CHUNK_SIZE}, 8);
-  drawChunk(gs, (ScePspFVector3){CHUNK_SIZE, 0.0f, 0.0f}, 8);
-  drawChunk(gs, (ScePspFVector3){0.0f, 0.0f, CHUNK_SIZE}, 8);
-  drawChunk(gs, (ScePspFVector3){-CHUNK_SIZE, 0.0f, 0.0f}, 8);
+  renderMap(gs);
 
   sceGuFinish();
   sceGuSync(0, 0);

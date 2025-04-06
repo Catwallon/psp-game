@@ -1,5 +1,5 @@
 CC = psp-gcc
-CFLAGS =
+CFLAGS = -g
 LDFLAGS = -L$(PSPDEV)/psp/sdk/lib
 LDLIBS = -lm -lpspkernel -lpspdebug -lpspdisplay -lpspge -lpspuser -lpspgu -lpspgum -lpspctrl
 CPPFLAGS = -I$(PSPDEV)/psp/sdk/include -Iinclude

@@ -17,5 +17,6 @@ void printDebug(GameState *gs) {
           gs->playerPos.y, gs->playerPos.z);
   fprintf(stdout, "Rot XYZ: %.3f / %.3f / %.3f\n", radToDeg(gs->playerRot.x),
           radToDeg(gs->playerRot.y), radToDeg(gs->playerRot.z));
+  fprintf(stdout, "Chunk XY: %d / %d\n", gs->chunk.x, gs->chunk.y);
   fprintf(stdout, "FPS: %d\n", getFPS(gs));
 }

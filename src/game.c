@@ -3,10 +3,12 @@
 GameState initGame() {
   GameState gs;
   ScePspFVector3 playerPos = {0.0f, 1.8f, 0.0f};
-  ScePspFVector3 playerRot = {0.0f, 0.0f, 0.0f};
+  ScePspFVector3 playerRot = {0.0f, degToRad(180.0f), 0.0f};
+  Vector2 chunk = {gs.playerPos.x / CHUNK_SIZE, gs.playerPos.z / CHUNK_SIZE};
 
   gs.playerPos = playerPos;
   gs.playerRot = playerRot;
+  gs.chunk = chunk;
   gs.debug = 0;
   gs.tick = 0;
   gs.previousTick = 0;
@@ -29,21 +31,23 @@ void updateGame(GameState *gs) {
 
   // Move forward / backward
   gs->playerPos.x +=
-      (getAnalogY(gs) - 128) * forwardX * PLAYER_SPEED * deltaTime;
+      (getAnalogY(gs) / 128.0f - 1.0f) * forwardX * PLAYER_SPEED * deltaTime;
   gs->playerPos.z +=
-      (getAnalogY(gs) - 128) * forwardZ * PLAYER_SPEED * deltaTime;
+      (getAnalogY(gs) / 128.0f - 1.0f) * forwardZ * PLAYER_SPEED * deltaTime;
 
   // Move left / right
-  gs->playerPos.x += (getAnalogX(gs) - 128) * rightX * PLAYER_SPEED * deltaTime;
-  gs->playerPos.z += (getAnalogX(gs) - 128) * rightZ * PLAYER_SPEED * deltaTime;
+  gs->playerPos.x +=
+      (getAnalogX(gs) / 128.0f - 1.0f) * rightX * PLAYER_SPEED * deltaTime;
+  gs->playerPos.z +=
+      (getAnalogX(gs) / 128.0f - 1.0f) * rightZ * PLAYER_SPEED * deltaTime;
 
   // Move up
   if (isPressed(gs, PSP_CTRL_UP))
-    gs->playerPos.y += PLAYER_SPEED * deltaTime * 128;
+    gs->playerPos.y += PLAYER_SPEED * deltaTime;
 
   // Move down
   if (isPressed(gs, PSP_CTRL_DOWN))
-    gs->playerPos.y -= PLAYER_SPEED * deltaTime * 128;
+    gs->playerPos.y -= PLAYER_SPEED * deltaTime;
 
   // Rotate left
   if (isPressed(gs, PSP_CTRL_SQUARE))
@@ -74,6 +78,11 @@ void updateGame(GameState *gs) {
   // Enable / Disable debug
   if (isJustPressed(gs, PSP_CTRL_SELECT))
     gs->debug = !gs->debug;
+
+  // Update current chunk
+  Vector2 chunk = {gs->playerPos.x / CHUNK_SIZE - (gs->playerPos.x < 0),
+                   gs->playerPos.z / CHUNK_SIZE - (gs->playerPos.z < 0)};
+  gs->chunk = chunk;
 }
 
 void gameLoop(GameState *gs) {
