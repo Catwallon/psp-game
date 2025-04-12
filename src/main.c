@@ -1,6 +1,6 @@
-#include "callback.h"
-#include "game.h"
-#include "gamestate.h"
+#include "pggame.h"
+#include "pgtypes.h"
+#include "pgutils.h"
 #include <pspkernel.h>
 
 PSP_MODULE_INFO("PSP Game", 0, 0, 1);

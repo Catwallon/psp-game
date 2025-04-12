@@ -1,4 +1,4 @@
-#include "debug.h"
+#include "pgutils.h"
 
 void initDebug() { pspDebugScreenInit(); }
 

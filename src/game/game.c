@@ -1,21 +1,26 @@
-#include "game.h"
+#include "pggame.h"
 
 GameState initGame() {
   GameState gs;
-  ScePspFVector3 playerPos = {0.0f, 1.8f, 0.0f};
-  ScePspFVector3 playerRot = {0.0f, degToRad(180.0f), 0.0f};
-  Vector2 chunk = {gs.playerPos.x / CHUNK_SIZE, gs.playerPos.z / CHUNK_SIZE};
+  fVec3 playerPos = {0.0f, 1.8f, 0.0f};
+  fVec3 playerRot = {0.0f, degToRad(180.0f), 0.0f};
 
+  initGu();
+  initInput();
+  initDebug();
   gs.playerPos = playerPos;
   gs.playerRot = playerRot;
+  iVec2 chunk = {gs.playerPos.x / CHUNK_SIZE, gs.playerPos.z / CHUNK_SIZE};
   gs.chunk = chunk;
   gs.debug = 0;
   gs.tick = 0;
   gs.previousTick = 0;
   gs.textureCache = initTextureCache();
-  initGu();
-  initInput();
-  initDebug();
+  gs.modelCache = initModelCache(&gs);
+  updateTerrainBuffer(&gs);
+  gs.drawList.models[0] = gs.modelCache.terrain;
+  gs.drawList.index = 1;
+
   return gs;
 }
 
@@ -80,9 +85,12 @@ void updateGame(GameState *gs) {
     gs->debug = !gs->debug;
 
   // Update current chunk
-  Vector2 chunk = {gs->playerPos.x / CHUNK_SIZE - (gs->playerPos.x < 0),
-                   gs->playerPos.z / CHUNK_SIZE - (gs->playerPos.z < 0)};
-  gs->chunk = chunk;
+  iVec2 chunk = {gs->playerPos.x / CHUNK_SIZE - (gs->playerPos.x < 0),
+                 gs->playerPos.z / CHUNK_SIZE - (gs->playerPos.z < 0)};
+  if (chunk.x != gs->chunk.x || chunk.y != gs->chunk.y) {
+    gs->chunk = chunk;
+    updateTerrainBuffer(gs);
+  }
 }
 
 void gameLoop(GameState *gs) {

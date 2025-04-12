@@ -1,5 +1,5 @@
 
-#include "callback.h"
+#include "pgutils.h"
 
 static int exitCallback(int arg1, int arg2, void *common) {
   sceKernelExitGame();

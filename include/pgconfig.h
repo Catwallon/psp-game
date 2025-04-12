@@ -8,8 +8,10 @@
 #define PLAYER_SPEED 10 // km/h
 #define SENSIVITY 3
 #define MAX_X_ANGLE 80
+#define FOV 70
 
 // Game settings
 #define CHUNK_SIZE 16 // m
 #define CHUNK_RESOLUTION 8
 #define RENDER_DISTANCE 4
+#define MAX_DRAW_CALL 1000

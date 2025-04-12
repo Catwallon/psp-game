@@ -1,13 +1,4 @@
-#include "tools.h"
-
-Vertex createVertex(float u, float v, float x, float y, float z) {
-  Vertex vertex = {u, v, x, y, z};
-  return vertex;
-}
-
-float degToRad(float deg) { return deg * (M_PI / 180.0f); }
-
-float radToDeg(float rad) { return rad * (180.0f / M_PI); }
+#include "pgutils.h"
 
 float getDeltaTime(GameState *gs) {
   unsigned int resolution = sceRtcGetTickResolution();

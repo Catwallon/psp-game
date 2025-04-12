@@ -1,4 +1,4 @@
-#include "input.h"
+#include "pgutils.h"
 
 void initInput() {
   sceCtrlSetSamplingCycle(0);

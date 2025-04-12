@@ -1,4 +1,5 @@
-#include "renderer.h"
+#include "pggraphics.h"
+#include <stdio.h>
 
 static int __attribute__((aligned(16))) list[262144];
 
@@ -25,28 +26,47 @@ void initGu() {
   sceGuEnable(GU_CULL_FACE);
   sceGuEnable(GU_TEXTURE_2D);
   sceGuEnable(GU_CLIP_PLANES);
-  sceGuFinish();
-  sceGuSync(0, 0);
-
+  sceGuEnable(GU_LIGHTING);
+  sceGuEnable(GU_LIGHT0);
   sceDisplayWaitVblankStart();
   sceGuDisplay(GU_TRUE);
+  sceGuFinish();
+  sceGuSync(0, 0);
 }
 
-void updateCamera(GameState *gs) {
+static void updateCamera(GameState *gs) {
   sceGumMatrixMode(GU_PROJECTION);
   sceGumLoadIdentity();
-  sceGumPerspective(70, 16.0f / 9.0f, 1.0f, 1000.0f);
+  sceGumPerspective(FOV, 16.0f / 9.0f, 1.0f, 1000.0f);
 
   sceGumMatrixMode(GU_VIEW);
   sceGumLoadIdentity();
   {
-    ScePspFVector3 invRot = {-gs->playerRot.x, -gs->playerRot.y,
-                             -gs->playerRot.z};
+    fVec3 invRot = {-gs->playerRot.x, -gs->playerRot.y, -gs->playerRot.z};
     sceGumRotateXYZ(&invRot);
-    ScePspFVector3 invPos = {-gs->playerPos.x, -gs->playerPos.y,
-                             -gs->playerPos.z};
+    fVec3 invPos = {-gs->playerPos.x, -gs->playerPos.y, -gs->playerPos.z};
     sceGumTranslate(&invPos);
     sceGumUpdateMatrix();
+  }
+}
+
+static void drawDrawList(DrawList drawList) {
+  sceGumMatrixMode(GU_MODEL);
+
+  for (unsigned int i = 0; i < drawList.index; i++) {
+    Model model = drawList.models[i];
+    Texture texture = model.texture;
+
+    sceGumLoadIdentity();
+
+    sceGuTexMode(GU_PSM_8888, 0, 0, 0);
+    sceGuTexFunc(GU_TFX_MODULATE, GU_TCC_RGB);
+    sceGuTexImage(0, texture.width, texture.height, texture.width,
+                  texture.data);
+    sceGuTexFilter(GU_LINEAR, GU_LINEAR);
+    sceGuTexWrap(GU_REPEAT, GU_REPEAT);
+
+    sceGumDrawArray(GU_TRIANGLE_STRIP, model.type, model.size, 0, model.buffer);
   }
 }
 
@@ -57,10 +77,16 @@ void renderGame(GameState *gs) {
   sceGuClearDepth(0);
   sceGuClear(GU_COLOR_BUFFER_BIT | GU_DEPTH_BUFFER_BIT);
 
+  sceGuLight(0, GU_DIRECTIONAL, GU_DIFFUSE_AND_SPECULAR,
+             &(fVec3){1.0f, 1.0f, 1.0f});
+  sceGuLightColor(0, GU_DIFFUSE_AND_SPECULAR, 0xffffffff);
+  sceGuSpecular(12.0f);
+  sceGuAmbientColor(0xffffffff);
+  sceGuColor(0xffffffff);
+
   updateCamera(gs);
 
-  sceGumMatrixMode(GU_MODEL);
-  renderMap(gs);
+  drawDrawList(gs->drawList);
 
   sceGuFinish();
   sceGuSync(0, 0);
