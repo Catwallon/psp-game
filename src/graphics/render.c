@@ -50,24 +50,20 @@ static void updateCamera(GameState *gs) {
   }
 }
 
-static void drawDrawList(DrawList drawList) {
+static void drawTerrain(Terrain terrain) {
   sceGumMatrixMode(GU_MODEL);
 
-  for (unsigned int i = 0; i < drawList.index; i++) {
-    Model model = drawList.models[i];
-    Texture texture = model.texture;
+  sceGumLoadIdentity();
 
-    sceGumLoadIdentity();
+  Texture texture = terrain.texture;
+  sceGuTexMode(GU_PSM_8888, 0, 0, 0);
+  sceGuTexFunc(GU_TFX_MODULATE, GU_TCC_RGB);
+  sceGuTexImage(0, texture.width, texture.height, texture.width, texture.data);
+  sceGuTexFilter(GU_LINEAR, GU_LINEAR);
+  sceGuTexWrap(GU_REPEAT, GU_REPEAT);
 
-    sceGuTexMode(GU_PSM_8888, 0, 0, 0);
-    sceGuTexFunc(GU_TFX_MODULATE, GU_TCC_RGB);
-    sceGuTexImage(0, texture.width, texture.height, texture.width,
-                  texture.data);
-    sceGuTexFilter(GU_LINEAR, GU_LINEAR);
-    sceGuTexWrap(GU_REPEAT, GU_REPEAT);
-
-    sceGumDrawArray(GU_TRIANGLE_STRIP, model.type, model.size, 0, model.buffer);
-  }
+  sceGumDrawArray(GU_TRIANGLE_STRIP, terrain.vType, terrain.vCount, 0,
+                  terrain.vBuffer);
 }
 
 void renderGame(GameState *gs) {
@@ -86,7 +82,7 @@ void renderGame(GameState *gs) {
 
   updateCamera(gs);
 
-  drawDrawList(gs->drawList);
+  drawTerrain(gs->terrain);
 
   sceGuFinish();
   sceGuSync(0, 0);

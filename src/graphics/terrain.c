@@ -1,5 +1,4 @@
 #include "pggraphics.h"
-#include <stdio.h>
 
 typedef struct {
   float u, v;
@@ -7,7 +6,7 @@ typedef struct {
   float x, y, z;
 } Vertex;
 
-fVec3 calculateNormal(fVec2 pos) {
+static fVec3 getNormal(fVec2 pos) {
 
   fVec3 A = {pos.x, simplex2D((fVec2){pos.x, pos.y + 0.5}), pos.y + 0.5};
   fVec3 B = {pos.x - 1, simplex2D((fVec2){pos.x - 1, pos.y - 0.5}),
@@ -21,48 +20,49 @@ fVec3 calculateNormal(fVec2 pos) {
   return normalizeVec3(crossVec3(vecAC, vecAB));
 }
 
-Vertex createVertex(fVec2 pos) {
-  fVec3 normal = calculateNormal(pos);
+static Vertex createVertex(fVec2 pos) {
+  fVec3 normal = getNormal(pos);
   Vertex result = {pos.x,    pos.y, normal.x,       normal.y,
                    normal.z, pos.x, simplex2D(pos), pos.y};
   return result;
 }
 
-static unsigned int nbVerticesChunk() {
-  return 2 * CHUNK_RESOLUTION * (CHUNK_RESOLUTION + 2);
-}
-
-static unsigned int nbVerticesTerrain() {
-  return (RENDER_DISTANCE * 8 + 1) * nbVerticesChunk();
-}
-
 // TODO: Manage transitions between chunks with different LOD
-static void generateChunk(iVec2 chunkPos, int chunkSize, Vertex *buffer,
-                          unsigned int *index) {
-  float stepLen = chunkSize / CHUNK_RESOLUTION;
-  buffer[(*index)++] = createVertex((fVec2){chunkPos.x, chunkPos.y});
-  for (int i = 0; i < CHUNK_RESOLUTION; i++) {
-    float z = i * stepLen + chunkPos.y;
-    for (int j = 0; j <= CHUNK_RESOLUTION; j++) {
-      float x = j * stepLen + chunkPos.x;
-      buffer[(*index)++] = createVertex((fVec2){x, z});
-      buffer[(*index)++] = createVertex((fVec2){x, z + stepLen});
+void generateChunk(GameState *gs) {
+  Chunk chunk = gs->terrain.chunkQueue.chunks[gs->terrain.chunkQueue.index];
+  if (!chunk.generated) {
+    Vertex *buffer = gs->terrain.vBuffer;
+    unsigned int index = gs->terrain.chunkQueue.index * NB_VERTICES_CHUNK;
+    float stepLen = chunk.size / CHUNK_RESOLUTION;
+
+    buffer[index++] = createVertex((fVec2){chunk.pos.x, chunk.pos.y});
+    for (int i = 0; i < CHUNK_RESOLUTION; i++) {
+      float z = i * stepLen + chunk.pos.y;
+      for (int j = 0; j <= CHUNK_RESOLUTION; j++) {
+        float x = j * stepLen + chunk.pos.x;
+        buffer[index++] = createVertex((fVec2){x, z});
+        buffer[index++] = createVertex((fVec2){x, z + stepLen});
+      }
+      buffer[index++] =
+          createVertex((fVec2){buffer[index - 1].x, buffer[index - 1].z});
+      if (i < CHUNK_RESOLUTION - 1) {
+        buffer[index++] =
+            createVertex((fVec2){chunk.pos.x, buffer[index - 1].z});
+      }
     }
-    buffer[(*index)++] =
-        createVertex((fVec2){buffer[*index - 1].x, buffer[*index - 1].z});
-    if (i < CHUNK_RESOLUTION - 1) {
-      buffer[(*index)++] =
-          createVertex((fVec2){chunkPos.x, buffer[*index - 1].z});
-    }
+    gs->terrain.chunkQueue.chunks[gs->terrain.chunkQueue.index++].generated = 1;
   }
+  if (gs->terrain.chunkQueue.index >= NB_CHUNKS)
+    gs->terrain.chunkQueue.index = 0;
 }
 
-void updateTerrainBuffer(GameState *gs) {
-  Vertex *buffer = gs->modelCache.terrain.buffer;
+void updateChunkQueue(GameState *gs) {
   int index = 0;
   int chunkDist = 0;
   iVec2 chunkPos = {gs->chunk.x * CHUNK_SIZE, gs->chunk.y * CHUNK_SIZE};
-  generateChunk(chunkPos, CHUNK_SIZE, buffer, &index);
+
+  Chunk chunk = {chunkPos, CHUNK_SIZE, 0};
+  gs->terrain.chunkQueue.chunks[index++] = chunk;
   int chunkSize = CHUNK_SIZE;
   for (int i = 0; i < RENDER_DISTANCE; i++) {
     chunkDist += chunkSize;
@@ -77,7 +77,8 @@ void updateTerrainBuffer(GameState *gs) {
                                     : -chunkDist;
           int posX = chunkPos.x + offsetX;
           int posY = chunkPos.y + offsetY;
-          generateChunk((iVec2){posX, posY}, chunkSize, buffer, &index);
+          Chunk chunk = {(iVec2){posX, posY}, chunkSize, 0};
+          gs->terrain.chunkQueue.chunks[index++] = chunk;
         }
       }
     }
@@ -85,12 +86,12 @@ void updateTerrainBuffer(GameState *gs) {
   }
 }
 
-Model initTerrainModel(GameState *gs) {
-  Model terrain;
+Terrain initTerrain(GameState *gs) {
+  Terrain terrain;
 
-  terrain.size = nbVerticesTerrain();
-  terrain.buffer = sceGuGetMemory(terrain.size * sizeof(Vertex));
-  terrain.type =
+  terrain.vCount = NB_CHUNKS * NB_VERTICES_CHUNK;
+  terrain.vBuffer = malloc(terrain.vCount * sizeof(Vertex));
+  terrain.vType =
       GU_TEXTURE_32BITF | GU_NORMAL_32BITF | GU_VERTEX_32BITF | GU_TRANSFORM_3D;
   terrain.texture = gs->textureCache.grass;
 

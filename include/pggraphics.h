@@ -12,14 +12,12 @@
 extern unsigned char grass_start[];
 TextureCache initTextureCache();
 
-// model.c
-ModelCache initModelCache(GameState *gs);
-
 // render.c
 void initGu();
 void renderGame(GameState *gs);
 void cleanupGu();
 
 // terrain.c
-Model initTerrainModel(GameState *gs);
-void updateTerrainBuffer(GameState *gs);
+Terrain initTerrain(GameState *gs);
+void updateChunkQueue(GameState *gs);
+void generateChunk(GameState *gs);

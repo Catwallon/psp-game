@@ -13,5 +13,4 @@
 // Game settings
 #define CHUNK_SIZE 16 // m
 #define CHUNK_RESOLUTION 8
-#define RENDER_DISTANCE 4
-#define MAX_DRAW_CALL 1000
+#define RENDER_DISTANCE 6

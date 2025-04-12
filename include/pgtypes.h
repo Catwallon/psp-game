@@ -1,6 +1,7 @@
 #pragma once
 
 #include "pgconfig.h"
+#include "pgconst.h"
 #include <pspctrl.h>
 #include <psptypes.h>
 
@@ -19,21 +20,24 @@ typedef struct {
   Texture grass;
 } TextureCache;
 
-typedef struct {
-  void *buffer;
-  unsigned int size;
-  int type;
-  Texture texture;
-} Model;
+typedef struct Chunk {
+  iVec2 pos;
+  int size;
+  char generated;
+} Chunk;
 
-typedef struct {
-  Model terrain;
-} ModelCache;
-
-typedef struct {
-  Model models[MAX_DRAW_CALL];
+typedef struct ChunkQueue {
+  Chunk chunks[NB_CHUNKS];
   unsigned int index;
-} DrawList;
+} ChunkQueue;
+
+typedef struct Terrain {
+  void *vBuffer;
+  unsigned int vCount;
+  int vType;
+  ChunkQueue chunkQueue;
+  Texture texture;
+} Terrain;
 
 typedef struct {
   fVec3 playerPos;
@@ -42,8 +46,7 @@ typedef struct {
   SceCtrlData pad;
   SceCtrlData previousPad;
   TextureCache textureCache;
-  ModelCache modelCache;
-  DrawList drawList;
+  Terrain terrain;
   unsigned long long tick;
   unsigned long long previousTick;
   char debug;

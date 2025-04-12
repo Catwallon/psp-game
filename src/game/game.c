@@ -1,4 +1,5 @@
 #include "pggame.h"
+#include <stdio.h>
 
 GameState initGame() {
   GameState gs;
@@ -16,10 +17,8 @@ GameState initGame() {
   gs.tick = 0;
   gs.previousTick = 0;
   gs.textureCache = initTextureCache();
-  gs.modelCache = initModelCache(&gs);
-  updateTerrainBuffer(&gs);
-  gs.drawList.models[0] = gs.modelCache.terrain;
-  gs.drawList.index = 1;
+  gs.terrain = initTerrain(&gs);
+  updateChunkQueue(&gs);
 
   return gs;
 }
@@ -89,8 +88,9 @@ void updateGame(GameState *gs) {
                  gs->playerPos.z / CHUNK_SIZE - (gs->playerPos.z < 0)};
   if (chunk.x != gs->chunk.x || chunk.y != gs->chunk.y) {
     gs->chunk = chunk;
-    updateTerrainBuffer(gs);
+    updateChunkQueue(gs);
   }
+  generateChunk(gs);
 }
 
 void gameLoop(GameState *gs) {
