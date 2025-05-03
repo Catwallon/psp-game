@@ -4,6 +4,7 @@
 #include "pgtypes.h"
 #include <pspctrl.h>
 #include <pspdebug.h>
+#include <pspdisplay.h>
 #include <pspkernel.h>
 #include <psprtc.h>
 #include <stdio.h>

@@ -6,14 +6,14 @@ GameState initGame() {
   fVec3 playerPos = {0.0f, 1.8f, 0.0f};
   fVec3 playerRot = {0.0f, degToRad(180.0f), 0.0f};
 
-  initGu();
+  initGu(&gs);
   initInput();
   initDebug();
   gs.playerPos = playerPos;
   gs.playerRot = playerRot;
   iVec2 chunk = {gs.playerPos.x / CHUNK_SIZE, gs.playerPos.z / CHUNK_SIZE};
   gs.chunk = chunk;
-  gs.debug = 0;
+  gs.debug = 1;
   gs.tick = 0;
   gs.previousTick = 0;
   gs.textureCache = initTextureCache();

@@ -20,18 +20,18 @@ typedef struct {
   Texture grass;
 } TextureCache;
 
-typedef struct Chunk {
+typedef struct {
   iVec2 pos;
   int size;
   char generated;
 } Chunk;
 
-typedef struct ChunkQueue {
+typedef struct {
   Chunk chunks[NB_CHUNKS];
   unsigned int index;
 } ChunkQueue;
 
-typedef struct Terrain {
+typedef struct {
   void *vBuffer;
   unsigned int vCount;
   int vType;
@@ -40,6 +40,9 @@ typedef struct Terrain {
 } Terrain;
 
 typedef struct {
+  unsigned int fbp0Addr;
+  unsigned int fbp1Addr;
+  unsigned int currentBuffer;
   fVec3 playerPos;
   fVec3 playerRot;
   iVec2 chunk;

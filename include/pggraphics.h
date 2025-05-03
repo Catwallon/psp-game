@@ -13,7 +13,7 @@ extern unsigned char grass_start[];
 TextureCache initTextureCache();
 
 // render.c
-void initGu();
+void initGu(GameState *gs);
 void renderGame(GameState *gs);
 void cleanupGu();
 

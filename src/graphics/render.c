@@ -3,7 +3,7 @@
 
 static int __attribute__((aligned(16))) list[262144];
 
-void initGu() {
+void initGu(GameState *gs) {
 
   void *fbp0 = guGetStaticVramBuffer(BUF_WIDTH, SCR_HEIGHT, GU_PSM_8888);
   void *fbp1 = guGetStaticVramBuffer(BUF_WIDTH, SCR_HEIGHT, GU_PSM_8888);
@@ -32,6 +32,9 @@ void initGu() {
   sceGuDisplay(GU_TRUE);
   sceGuFinish();
   sceGuSync(0, 0);
+
+  gs->fbp0Addr = (unsigned int)fbp0;
+  gs->fbp1Addr = (unsigned int)fbp1;
 }
 
 static void updateCamera(GameState *gs) {
@@ -87,7 +90,7 @@ void renderGame(GameState *gs) {
   sceGuFinish();
   sceGuSync(0, 0);
   sceDisplayWaitVblankStart();
-  sceGuSwapBuffers();
+  gs->currentBuffer = (unsigned int)sceGuSwapBuffers();
 }
 
 void cleanupGu() { sceGuTerm(); }
