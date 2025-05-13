@@ -28,3 +28,6 @@ unsigned int getFPS(GameState *gs);
 void initDebug();
 void displayDebug(GameState *gs);
 void printDebug(GameState *gs);
+
+// error.c
+void exitError(char *msg);

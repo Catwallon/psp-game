@@ -16,7 +16,7 @@ GameState initGame() {
   gs.debug = 1;
   gs.tick = 0;
   gs.previousTick = 0;
-  gs.textureCache = initTextureCache();
+  gs.modelCache = initModelCache();
   gs.terrain = initTerrain(&gs);
   updateChunkQueue(&gs);
 

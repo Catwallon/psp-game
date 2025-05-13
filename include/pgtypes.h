@@ -11,14 +11,11 @@ typedef struct ScePspFVector2 fVec2;
 typedef struct ScePspFVector3 fVec3;
 
 typedef struct {
-  int width;
-  int height;
-  unsigned char *data;
+  void *buffer;
+  unsigned int width;
+  unsigned int height;
+  int type;
 } Texture;
-
-typedef struct {
-  Texture grass;
-} TextureCache;
 
 typedef struct {
   iVec2 pos;
@@ -40,6 +37,18 @@ typedef struct {
 } Terrain;
 
 typedef struct {
+  float *vBuffer;
+  unsigned int vCount;
+  int vType;
+  int prim;
+  Texture texture;
+} Model;
+
+typedef struct {
+  Model knight;
+} ModelCache;
+
+typedef struct {
   unsigned int fbp0Addr;
   unsigned int fbp1Addr;
   unsigned int currentBuffer;
@@ -48,7 +57,7 @@ typedef struct {
   iVec2 chunk;
   SceCtrlData pad;
   SceCtrlData previousPad;
-  TextureCache textureCache;
+  ModelCache modelCache;
   Terrain terrain;
   unsigned long long tick;
   unsigned long long previousTick;

@@ -21,7 +21,6 @@ void initGu(GameState *gs) {
   sceGuEnable(GU_SCISSOR_TEST);
   sceGuDepthFunc(GU_GEQUAL);
   sceGuEnable(GU_DEPTH_TEST);
-  sceGuFrontFace(GU_CW);
   sceGuShadeModel(GU_SMOOTH);
   sceGuEnable(GU_CULL_FACE);
   sceGuEnable(GU_TEXTURE_2D);
@@ -55,18 +54,40 @@ static void updateCamera(GameState *gs) {
 
 static void drawTerrain(Terrain terrain) {
   sceGumMatrixMode(GU_MODEL);
+  sceGuFrontFace(GU_CW);
 
   sceGumLoadIdentity();
 
   Texture texture = terrain.texture;
-  sceGuTexMode(GU_PSM_8888, 0, 0, 0);
+  sceGuTexMode(texture.type, 0, 0, 0);
   sceGuTexFunc(GU_TFX_MODULATE, GU_TCC_RGB);
-  sceGuTexImage(0, texture.width, texture.height, texture.width, texture.data);
+  sceGuTexImage(0, texture.width, texture.height, texture.width,
+                texture.buffer);
   sceGuTexFilter(GU_LINEAR, GU_LINEAR);
   sceGuTexWrap(GU_REPEAT, GU_REPEAT);
 
   sceGumDrawArray(GU_TRIANGLE_STRIP, terrain.vType, terrain.vCount, 0,
                   terrain.vBuffer);
+}
+
+static void drawModel(Model model, fVec3 pos, fVec3 rot) {
+  sceGumMatrixMode(GU_MODEL);
+  sceGuFrontFace(GU_CCW);
+
+  sceGumLoadIdentity();
+
+  sceGumTranslate(&pos);
+  sceGumRotateXYZ(&rot);
+
+  Texture texture = model.texture;
+  sceGuTexMode(texture.type, 0, 0, 0);
+  sceGuTexFunc(GU_TFX_MODULATE, GU_TCC_RGB);
+  sceGuTexImage(0, texture.width, texture.height, texture.width,
+                texture.buffer);
+  sceGuTexFilter(GU_LINEAR, GU_LINEAR);
+  sceGuTexWrap(GU_REPEAT, GU_REPEAT);
+
+  sceGumDrawArray(model.prim, model.vType, model.vCount, 0, model.vBuffer);
 }
 
 void renderGame(GameState *gs) {
@@ -77,7 +98,7 @@ void renderGame(GameState *gs) {
   sceGuClear(GU_COLOR_BUFFER_BIT | GU_DEPTH_BUFFER_BIT);
 
   sceGuLight(0, GU_DIRECTIONAL, GU_DIFFUSE_AND_SPECULAR,
-             &(fVec3){1.0f, 1.0f, 1.0f});
+             &(fVec3){1.0f, 1.0f, -0.5f});
   sceGuLightColor(0, GU_DIFFUSE_AND_SPECULAR, 0xffffffff);
   sceGuSpecular(12.0f);
   sceGuAmbientColor(0xffffffff);
@@ -86,6 +107,8 @@ void renderGame(GameState *gs) {
   updateCamera(gs);
 
   drawTerrain(gs->terrain);
+  drawModel(gs->modelCache.knight, (fVec3){0.0f, 0.0f, 0.0f},
+            (fVec3){0.0f, 0.0f, 0.0f});
 
   sceGuFinish();
   sceGuSync(0, 0);

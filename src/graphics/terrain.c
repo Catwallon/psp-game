@@ -93,7 +93,7 @@ Terrain initTerrain(GameState *gs) {
   terrain.vBuffer = malloc(terrain.vCount * sizeof(Vertex));
   terrain.vType =
       GU_TEXTURE_32BITF | GU_NORMAL_32BITF | GU_VERTEX_32BITF | GU_TRANSFORM_3D;
-  terrain.texture = gs->textureCache.grass;
+  terrain.texture = loadTexture("grass.raw", 128, 128, GU_PSM_8888);
 
   return terrain;
 }
